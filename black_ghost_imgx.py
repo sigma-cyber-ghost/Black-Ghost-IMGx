@@ -3,6 +3,7 @@ import subprocess
 import time
 from rich.console import Console
 from rich.prompt import Prompt
+from rich.progress import Progress, SpinnerColumn, TextColumn
 import sys
 
 console = Console()
@@ -44,12 +45,23 @@ def glitch_effect(text, delay=0.05):
     print()
 
 def check_command_exists(command):
-    return subprocess.call(f"type {command}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
+    return subprocess.call(f"command -v {command}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
+
+def install_dependencies():
+    console.print("[yellow]Checking and installing dependencies...[/yellow]")
+    packages = []
+    if not check_command_exists("exiftool"):
+        packages.append("exiftool")
+    if not check_command_exists("steghide"):
+        packages.append("steghide")
+    if packages:
+        console.print(f"[cyan]Installing: {' '.join(packages)}[/cyan]")
+        pkg_manager = "pkg" if os.getenv("PREFIX") else "sudo apt"
+        os.system(f"{pkg_manager} update && {pkg_manager} install -y {' '.join(packages)}")
+    else:
+        console.print("[green]All dependencies are satisfied.[/green]")
 
 def extract_exif_raw(image_path):
-    if not check_command_exists("exiftool"):
-        console.print("[red]Error: 'exiftool' is not installed.[/red]")
-        return
     console.print(f"[yellow]Dumping Full EXIF Metadata from:[/yellow] {image_path}")
     subprocess.run(["exiftool", image_path])
 
@@ -68,13 +80,13 @@ def shred_metadata(image_path, output_path):
 def extreme_purge(image_path):
     console.print("[red bold]Extreme Mode: Sector Overwrite Initiated...[/red bold]")
     purge_cmd = f"dd if=/dev/zero of='{image_path}' bs=1M count=10 conv=notrunc status=none"
-    os.system(purge_cmd)
+    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}")) as progress:
+        task = progress.add_task("Overwriting Sectors...", total=None)
+        os.system(purge_cmd)
+        progress.stop()
     console.print("[bold red]Image Sector Wipe Complete. Recovery Impossible.[/bold red]")
 
 def stego_scan(image_path):
-    if not check_command_exists("steghide"):
-        console.print("[red]Error: 'steghide' is not installed.[/red]")
-        return
     console.print("[magenta]Scanning for Hidden Data (Stego Mode)...[/magenta]")
     result = subprocess.run(["steghide", "extract", "-sf", image_path, "-p", ""], capture_output=True, text=True)
     if "wrote extracted data" in result.stdout:
@@ -83,9 +95,6 @@ def stego_scan(image_path):
         console.print(f"[red]No hidden data found or file is clean.[/red]")
 
 def stego_hide(image_path, secret_file):
-    if not check_command_exists("steghide"):
-        console.print("[red]Error: 'steghide' is not installed.[/red]")
-        return
     console.print("[blue]Embedding secret message inside the image...[/blue]")
     result = subprocess.run(["steghide", "embed", "-cf", image_path, "-ef", secret_file, "-p", ""], capture_output=True, text=True)
     if "embedding" in result.stdout or result.returncode == 0:
@@ -95,7 +104,7 @@ def stego_hide(image_path, secret_file):
 
 def main_menu():
     console.print(f"[bold magenta]{BANNER}[/bold magenta]")
-    glitch_effect("BLACK-GHOST-IMGx", 0.08)
+    glitch_effect("SIGMA-GHOST-HACKING", 0.08)
     console.print(SOCIAL)
 
     while True:
@@ -159,9 +168,5 @@ def main_menu():
             console.print("[red]Invalid Option.[/red]")
 
 if __name__ == "__main__":
-    # If not inside Termux, enforce Root Check.
-    if not os.path.exists("/data/data/com.termux/files"):
-        if os.geteuid() != 0:
-            console.print("[bold red]Run as Root![/bold red]")
-            sys.exit(1)
+    install_dependencies()
     main_menu()
