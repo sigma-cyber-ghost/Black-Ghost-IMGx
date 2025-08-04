@@ -14,14 +14,12 @@ Powerful image sanitization/steganography toolkit for cyber operatives. Wipes di
 | **Stego-Hide**              | Embeds secret files/messages into images                                    |
 
 ## 🩸 Menu  
-```
 1. Extract Metadata (ExifTool)  
 2. Sanitize Metadata (Remove EXIF/JFIF)  
 3. Extreme Sector Purge (dd wipe)  
 4. Stego-Scanner (Extract payloads)  
 5. Stego-Hide (Embed secrets)  
 6. Exit
-```
 
 ## 🩸 Installation Linux
 ```python
@@ -46,3 +44,7 @@ Kali/Debian/Termux
 Dependencies: exiftool, steghide, coreutils, Pillow, rich
 
 ## 🩸 This tool is crafted for Black-Hat operatives. Sigma-Ghost, the creator, holds no responsibility for your actions. You own your consequences.
+
+## 🌐 Connect With Us
+
+[![Telegram](https://img.shields.io/badge/Telegram-Sigma_Ghost-blue?logo=telegram)](https://t.me/Sigma_Cyber_Ghost)  [![YouTube](https://img.shields.io/badge/YouTube-Sigma_Ghost-red?logo=youtube)](https://www.youtube.com/@sigma_ghost_hacking)  [![Instagram](https://img.shields.io/badge/Instagram-Safder_Khan-purple?logo=instagram)](https://www.instagram.com/safderkhan0800_/)  [![Twitter](https://img.shields.io/badge/Twitter-@safderkhan0800_-1DA1F2?logo=twitter)](https://twitter.com/safderkhan0800_)
