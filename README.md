@@ -14,7 +14,7 @@ Powerful image sanitization/steganography toolkit for cyber operatives. Wipes di
 | **Stego-Hide**              | Embeds secret files/messages into images                                    |
 
 ## 🩸 Menu  
-```python
+```
 1. Extract Metadata (ExifTool)  
 2. Sanitize Metadata (Remove EXIF/JFIF)  
 3. Extreme Sector Purge (dd wipe)  
