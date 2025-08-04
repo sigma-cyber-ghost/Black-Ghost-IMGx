@@ -95,7 +95,7 @@ def stego_hide(image_path, secret_file):
 
 def main_menu():
     console.print(f"[bold magenta]{BANNER}[/bold magenta]")
-    glitch_effect("SIGMA-GHOST-HACKING", 0.08)
+    glitch_effect("BLACK-GHOST-IMGx", 0.08)
     console.print(SOCIAL)
 
     while True:
@@ -159,7 +159,9 @@ def main_menu():
             console.print("[red]Invalid Option.[/red]")
 
 if __name__ == "__main__":
-    if os.geteuid() != 0:
-        console.print("[bold red]Run as Root![/bold red]")
-        sys.exit(1)
+    # If not inside Termux, enforce Root Check.
+    if not os.path.exists("/data/data/com.termux/files"):
+        if os.geteuid() != 0:
+            console.print("[bold red]Run as Root![/bold red]")
+            sys.exit(1)
     main_menu()
